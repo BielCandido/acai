@@ -1,16 +1,49 @@
-export default function Page() {
+export default async function Page() {
+
+    let tamanhos = await fetch('http:localhost:3001/tamanhos')
+    let tamanhosJson = await tamanhos.json()
+    console.log(tamanhosJson)
+
+    let tipos = await fetch('http:localhost:3001/tipos')
+    let tiposJson = await tipos.json()
+    console.log(tiposJson)
+
+    let complementos = await fetch('http:localhost:3001/complementos')
+    let complementosJson = await complementos.json()
+    console.log(complementosJson)
+
+ 
+    
+
     return (
       <div>
-        <div>
-            Tamanho
+        <h2> FAÇA O SEU PEDIDO</h2>
+         <div>
+         Tamanhos
             <select>
-                <option selected>Selecione</option> 
-                <option>300ml</option>
-                <option>500ml</option>
-                <option>700ml</option>
-                <option>1000ml</option>
+            {tamanhosJson.data.map((tamanho) => (
+                <option value={tamanho.id} key={tamanho.id}>{tamanho.nome}</option>
+            ))}
             </select>
         </div>
+        
+         <div>
+         Tipo de acai <select>
+             {tiposJson.data.map((tipo) => (
+                 <option value={tipo.id} key={tipo.id}>{tipo.nome}</option> 
+                 ))}
+            </select>
+        </div>
+        
+        <div>
+         Complementos <select>
+             {complementosJson.data.map((complemento) => (
+                 <option value={complemento.id} key={complemento.id}>{complemento.nome}</option> 
+                 ))}
+            </select>
+        </div>
+
+        {/* 
         <div>
             Tipo de açaí
             <select>
@@ -40,8 +73,8 @@ export default function Page() {
             </select>
         </div>
             <div>
-            <input class="styled" type="button" value="Fazer pedido"/>
-            </div>
+            <input type="button" value="Fazer pedido"/>
+            </div> */}
 
       </div>
   
