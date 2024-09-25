@@ -37,8 +37,11 @@ export const getComplementos = async (_, res) => {
         }) 
      });
 }
-export const getPedidos = async (req, res) =>{
-    
+export const postPedido = async (req, res) => {
+   console.log(req)
+   return res.send(200, {
+    data: {}
+   })
 }
 
 async function executarComando (comando){

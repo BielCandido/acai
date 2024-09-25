@@ -1,68 +1,162 @@
 'use client'
-
-export default async function Page() {
-    async function onSubmit(event) {
-        event.preventDefault()
-        
-        const formData = new FormData(event.target)
-        const response = await fetch('http:localhost:3001/pedido',{
-            method: 'POST',
-            body: formData,
-        })
-
-        //resposta do backend
-        const data = await response.json()
+ 
+import { useState, useEffect } from 'react'
+ 
+export default function Page() {
+  const [tipos, setTipos] = useState([])
+ 
+  useEffect(() => {
+    async function fetchTipos() {
+      let res = await fetch('http://localhost:3001/tipos')
+      let data = await res.json()
+      setTipos(data.data)
     }
+    fetchTipos()
+  }, [])
 
-    let tamanhos = await fetch('http:localhost:3001/tamanhos')
-    let tamanhosJson = await tamanhos.json()
-    console.log(tamanhosJson)
+  async function onSubmit(event) {
+          event.preventDefault()
+       
+          const formData = new FormData(event.target)
+          const response = await fetch('http://localhost:3001/pedido', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(Object.fromEntries(formData))
+          })
+       
+          // Handle response if necessary
+          const data = await response.json()
+          // ...
+        }
+ 
+  return (
+            <div>
+          <form onSubmit={onSubmit}>
+          <h2> FAÇA O SEU PEDIDO</h2>
+                     <div>
+                         Tipos
+                         <select name="tipo">
+                             {tipos.map((tipo) => (
+                                 <option value={tipo.id} key={tipo.id}>{tipo.nome}</option>
+                            ))}
+                        </select>
+                    </div>
+            <button type="submit">Submit</button>
+          </form>
+          </div>
+        )
+}
 
-    let tipos = await fetch('http:localhost:3001/tipos')
-    let tiposJson = await tipos.json()
-    console.log(tiposJson)
+// 'use client'
 
-    let complementos = await fetch('http:localhost:3001/complementos')
-    let complementosJson = await complementos.json()
-    console.log(complementosJson)
+// export default async function Page() {
+
+//     let tamanhosJson = {data:[]}
+//      fetch('http:localhost:3001/tamanhos').then(res => {
+//         tamanhosJson = res.body.json()
+//     })
+//         console.log(tamanhosJson)
+    
+
+//     async function onSubmit(event) {
+//       event.preventDefault()
+   
+//       const formData = new FormData(event.target)
+//       const response = await fetch('/api/submit', {
+//         method: 'POST',
+//         body: formData,
+//       })
+   
+//       // Handle response if necessary
+//       const data = await response.json()
+//       // ...
+//     }
+   
+//     return (
+//         <div>
+//       <form onSubmit={onSubmit}>
+//       <h2> FAÇA O SEU PEDIDO</h2>
+//                  <div>
+//                      Tamanhos
+//                      <select>
+//                          {tamanhosJson.data.map((tamanho) => (
+//                              <option value={tamanho.id} key={tamanho.id}>{tamanho.nome}</option>
+//                         ))}
+//                     </select>
+//                 </div>
+//         <button type="submit">Submit</button>
+//       </form>
+//       </div>
+//     )
+//   }
+
+// export default async function Page() {
+//     async function onSubmit(event) {
+//         debugger
+//         event.preventDefault()
+        
+//         const formData = new FormData(event.target)
+//         const response = await fetch('http:localhost:3001/pedido',{
+//             method: 'POST',
+//             body: formData,
+//         })
+
+//         //resposta do backend
+//         const data = await response.json()
+//     }
+
+//     let tamanhos = await fetch('http:localhost:3001/tamanhos')
+//     let tamanhosJson = await tamanhos.json()
+//     console.log(tamanhosJson)
+
+//     let tipos = await fetch('http:localhost:3001/tipos')
+//     let tiposJson = await tipos.json()
+//     console.log(tiposJson)
+
+//     let complementos = await fetch('http:localhost:3001/complementos')
+//     let complementosJson = await complementos.json()
+//     console.log(complementosJson)
 
 
 
 
-    return (
-        <div>
-            <form onSubmit={onSubmit}>
+//     return (
+//         <div>
+//             <form onSubmit={onSubmit}>
                 
-                <h2> FAÇA O SEU PEDIDO</h2>
-                <div>
-                    Tamanhos
-                    <select>
-                        {tamanhosJson.data.map((tamanho) => (
-                            <option value={tamanho.id} key={tamanho.id}>{tamanho.nome}</option>
-                        ))}
-                    </select>
-                </div>
+//                 <h2> FAÇA O SEU PEDIDO</h2>
+//                 <div>
+//                     Tamanhos
+//                     <select>
+//                         {tamanhosJson.data.map((tamanho) => (
+//                             <option value={tamanho.id} key={tamanho.id}>{tamanho.nome}</option>
+//                         ))}
+//                     </select>
+//                 </div>
 
-                <div>
-                    Tipo de acai <select>
-                        {tiposJson.data.map((tipo) => (
-                            <option value={tipo.id} key={tipo.id}>{tipo.nome}</option>
-                        ))}
-                    </select>
-                </div>
+//                 <div>
+//                     Tipo de acai <select>
+//                         {tiposJson.data.map((tipo) => (
+//                             <option value={tipo.id} key={tipo.id}>{tipo.nome}</option>
+//                         ))}
+//                     </select>
+//                 </div>
 
-                <div>
-                    Complementos <select>
-                        {complementosJson.data.map((complemento) => (
-                            <option value={complemento.id} key={complemento.id}>{complemento.nome}</option>
-                        ))}
-                    </select>
+//                 <div>
+//                     Complementos <select>
+//                         {complementosJson.data.map((complemento) => (
+//                             <option value={complemento.id} key={complemento.id}>{complemento.nome}</option>
+//                         ))}
+//                     </select>
 
-                </div>
-                <button type="submit"> Enviar Pedido</button>
-            </form>
-      </div>
+//                 </div>
+//                 <button type="submit"> Enviar Pedido</button>
+//             </form>
+//       </div>
   
-    )
-  }
+//     )
+//   }
   

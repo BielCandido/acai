@@ -1,5 +1,5 @@
 import express from 'express'
-import { getComplementos, getTamanhos, getTipos } from "../controllers/controllers.js" 
+import { getComplementos, getTamanhos, getTipos, postPedido } from "../controllers/controllers.js" 
 
 const router = express.Router()
 
