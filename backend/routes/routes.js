@@ -7,6 +7,6 @@ router.get("/tamanhos", getTamanhos)
 router.get("/tipos", getTipos)
 router.get("/complementos", getComplementos)
 
-// router.post("/pedido", postPedido)
+router.post("/pedido", postPedido)
 
 export default router

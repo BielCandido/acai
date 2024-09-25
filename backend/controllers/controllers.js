@@ -37,6 +37,9 @@ export const getComplementos = async (_, res) => {
         }) 
      });
 }
+export const getPedidos = async (req, res) =>{
+    
+}
 
 async function executarComando (comando){
 
