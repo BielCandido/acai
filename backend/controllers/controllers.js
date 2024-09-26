@@ -38,35 +38,28 @@ export const getComplementos = async (_, res) => {
      });
 }
 export const postPedido = async (req, res) => {
-   console.log(req)
+    var tipo = await executeSQL("SELECT valor FROM tipo_acai WHERE id=?", [req.body.tipo])
+    var tamanho = await executeSQL("SELECT valor FROM tamanho WHERE id=?", [req.body.tamanho])
+
+    var valorTotal = parseFloat(tipo[0].valor)+parseFloat(tamanho[0].valor)
+
+    var resultado = await executeSQL("INSERT INTO pedido (data_pedido) VALUES (now());")
+    var pedidoId = resultado.insertId;
+    var resultado2 = await executeSQL("INSERT INTO produto (tamanho_id, tipo_acai_id, pedidos_id, valor_total) VALUES (? , ? , ?, ?);", [req.body.tamanho, req.body.tipo, pedidoId, valorTotal])
+
+ 
+
+// INSERT INTO pedido (data_pedido) VALUES (now());
+// INSERT INTO produto (tamanho_id, tipo_acai_id, pedidos_id, valor_total) VALUES (1 , 1 , last_insert_id(), 20);
    return res.send(200, {
-    data: {}
+    data: {
+        id: resultado2.insertId
+    }
    })
 }
 
-async function executarComando (comando){
-
-    let resultado = []
-
-    var connection = mysql.createConnection({
-    host     : '192.168.1.121',
-    user     : 'myuser',
-    password : 'senha123',
-    database : 'db_acaiteria'
-    });
-
-    connection.connect();
-
-    await connection.query(comando, function (error, results, fields) {
-        if (error) throw error;
-        resultado = results;
-    });
-    
-    connection.end();
-    return resultado
-}
-
 async function executeSQL(query, params = []) {
+
     const connection = await mysql.createConnection({
       host: '192.168.1.121', // Your database host
       user: 'myuser',      // Your database user

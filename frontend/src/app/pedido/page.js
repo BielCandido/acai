@@ -1,10 +1,23 @@
 'use client'
- 
+
 import { useState, useEffect } from 'react'
+import '../styles/globals.css'
+
  
-export default function Page() {
+export default function Page() {    
+  const [tamanhos, setTamanhos] = useState([])
   const [tipos, setTipos] = useState([])
+  const [complementos, setComplementos] = useState([])
  
+  useEffect(() => {
+    async function fetchTamanhos() {
+      let res = await fetch('http://localhost:3001/tamanhos')
+      let data = await res.json()
+      setTamanhos(data.data)
+    }
+    fetchTamanhos()
+  }, [])
+
   useEffect(() => {
     async function fetchTipos() {
       let res = await fetch('http://localhost:3001/tipos')
@@ -12,6 +25,15 @@ export default function Page() {
       setTipos(data.data)
     }
     fetchTipos()
+  }, [])
+
+  useEffect(() => {
+    async function fetchComplementos() {
+      let res = await fetch('http://localhost:3001/complementos')
+      let data = await res.json()
+      setComplementos(data.data)
+    }
+    fetchComplementos()
   }, [])
 
   async function onSubmit(event) {
@@ -36,6 +58,14 @@ export default function Page() {
             <div>
           <form onSubmit={onSubmit}>
           <h2> FAÇA O SEU PEDIDO</h2>
+          <div>
+                      Tamanhos
+                         <select name="tamanho">
+                             {tamanhos.map((tamanho) => (
+                                 <option value={tamanho.id} key={tamanho.id}>{tamanho.nome}</option>
+                            ))}
+                        </select>
+                    </div>
                      <div>
                          Tipos
                          <select name="tipo">
@@ -44,6 +74,15 @@ export default function Page() {
                             ))}
                         </select>
                     </div>
+                    <div>
+                         Complementos
+                         <select name="complemento">
+                             {complementos.map((complemento) => (
+                                 <option value={complemento.id} key={complemento.id}>{complemento.nome} - {complemento.valor}</option>
+                            ))}
+                        </select>
+                    </div>
+
             <button type="submit">Submit</button>
           </form>
           </div>
