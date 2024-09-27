@@ -26,17 +26,24 @@ export const getTipos = async (_, res) => {
      });
 }
 
-export const getComplementos = async (_, res) => {
-    var z = await executeSQL("SELECT * FROM complemento")
-
-    return res.send(200, { 
-        data: z.map((item2) => {
-            return {
-                id: item2.id, nome: item2.nome, valor: item2.valor
-            }
-        }) 
-     });
+export const getRelatorioPedidos = async (_, res) =>{
+    var resultado= await executeSQL(`
+    SELECT
+        PED.id id_pedido,
+        date_format(PED.data_pedido, '%d/%m/%Y - %H:%i') AS data_pedido,
+        PROD.valor_total,
+        TAM.tipo tamanho,
+        TIPO.tipo
+    FROM pedido PED
+    JOIN produto PROD ON PROD.pedidos_id = PED.id
+    JOIN tamanho TAM ON TAM.id = PROD.tamanho_id 
+    JOIN tipo_acai TIPO ON TIPO.id = PROD.tipo_acai_id
+    ORDER BY PED.id`)
+    return res.send(200, {
+        data: resultado
+    })
 }
+
 export const postPedido = async (req, res) => {
     var tipo = await executeSQL("SELECT valor FROM tipo_acai WHERE id=?", [req.body.tipo])
     var tamanho = await executeSQL("SELECT valor FROM tamanho WHERE id=?", [req.body.tamanho])
@@ -56,6 +63,20 @@ export const postPedido = async (req, res) => {
         id: resultado2.insertId
     }
    })
+}
+
+export const deletePedido = async(req, res) => {
+    var idPedido = req.params.id
+
+    var deleteProduto = "DELETE FROM produto where pedidos_id=?;"
+    var deletePedido = "DELETE FROM pedido where id=?;"
+
+    await executeSQL(deleteProduto, [idPedido])
+    await executeSQL(deletePedido, [idPedido])
+
+    return res.send(200, {data: {
+        status: "OK"
+    }})
 }
 
 async function executeSQL(query, params = []) {
